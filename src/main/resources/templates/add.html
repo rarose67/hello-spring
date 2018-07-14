@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head th:replace="fragments :: head"></head>
+<body>
+<!-- <nav th:replace="fragments :: navigation"></nav> -->
+
+    <h1 th:text="${title}"></h1>
+
+<!-- <p th:if="${error} and ${error.length()}" th:text="${error}"></p> -->
+
+    <form method="post">
+        <div class="form-group">
+            <span>
+                <label th:for="int">Integer:</label>
+                <input class="form-control" id="int" type="text" name="newInt" />  |
+                <select class="form-control" name="intComp">
+                    <option th:replace="fragments :: compare"></option>
+                    <!-- <option th:each="type : ${types}"
+                             th:text="${type.getName()}"
+                             th:value="${type}"></option> -->
+                </select>
+            </span>
+        </div>
+        <div class="form-group">
+            <span>
+                <label th:for="float">Decimal:</label>
+                <input class="form-control" id="float" type="text" name="newFloat" />  |
+                <select class="form-control" name="floatComp">
+                    <option th:replace="fragments :: compare"></option>
+                </select>
+            </span>
+        </div>
+        <div class="form-group">
+            <label th:for="date">Date:</label>
+            <span>
+                <input class="form-control" id="month" type="text" name="month" /> /
+                <input class="form-control" id="day" type="text" name="day" /> /
+                <input class="form-control" id="year" type="text" name="year" />  |
+                <select class="form-control" name="dateComp">
+                    <option th:replace="fragments :: compare"></option>
+                </select>
+            </span>
+        </div>
+        <input type="submit"/>
+    </form>
+</body>
+</html>

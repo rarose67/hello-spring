@@ -1,11 +1,16 @@
 package org.launchcode.hellospring.controllers;
 
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
+import org.launchcode.hellospring.CompareTest;
+import org.launchcode.hellospring.CompareType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.GregorianCalendar;
 
 @Controller
 public class HelloController {
@@ -21,7 +26,18 @@ public class HelloController {
         }
         else
         {
-            return  "Hello World!";
+            //String compare = CompareType.EQUAL.name();
+            //String value = CompareType.EQUAL.getName();
+            CompareType[] values = CompareType.values();
+            String valueString = "";
+
+            for (int i=0; i<values.length; i++)
+            {
+                valueString += values[i] + " : " + values[i].getName();
+                valueString += " || ";
+            }
+
+            return valueString;
         }
     }
 
@@ -101,4 +117,79 @@ public class HelloController {
     {
         return "Hello " + name + "!";
     }
+
+    @RequestMapping(value = "add", method = RequestMethod.GET)  //set get Route for '/add'.
+    public String addForm(Model model)
+    {
+        CompareType[] types = CompareType.values();
+
+        model.addAttribute("types", types);
+        model.addAttribute("compareTest", new CompareTest());
+
+        return "add-oo";
+    }
+
+    @RequestMapping(value = "add", method = RequestMethod.POST)  //set post Route for '/add'.
+    //@ResponseBody  //Return plain text
+    public String addPost(@ModelAttribute @Valid CompareTest newTest, Errors errors, Model model)
+    {
+        String response = "";
+
+        if (errors.hasErrors())
+        {
+            CompareType[] types = CompareType.values();
+
+            model.addAttribute("types", types);
+
+            return "add-oo";
+        }
+
+        CompareTest test = new CompareTest(newTest.getNum2(), newTest.getDec(), newTest.getDay(),
+                newTest.getMonth(), newTest.getYear(), newTest.getIntComp(), newTest.getFloatComp(),
+                newTest.getDateComp());
+
+        if (test.getIntComp().getName().equals(CompareType.NONE.getName()))
+        {
+            response += "<p> newInt " + test.getNum2() + " wasn't compared.</p>";
+        }
+        else if(CompareTest.compareInt(test.getNum2(), test.getIntComp()))
+        {
+            response += "<p> newInt " + test.getNum2() + " is " + test.getIntComp().name() + "</p>";
+        }
+        else
+        {
+            response += "<p> newInt " + test.getNum2() + " is not " + test.getIntComp().name() + "</p>";
+        }
+
+        if (test.getFloatComp().getName().equals(CompareType.NONE.getName()))
+        {
+            response += "<p> newFloat " + test.getDec() + " wasn't compared.</p>";
+        }
+        else if(CompareTest.compareDec(test.getDec(), test.getFloatComp()))
+        {
+            response += "<p> newFloat " + test.getDec() + " is " + test.getFloatComp().name() + "</p>";
+        }
+        else
+        {
+            response += "<p> newFloat " + test.getDec() + " is not " + test.getFloatComp().name() + "</p>";
+        }
+
+        //GregorianCalendar newDate = new GregorianCalendar(year, (month-1), day);
+
+        if (test.getDateComp().getName().equals(CompareType.NONE.getName()))
+        {
+            response += "<p> newDate " + test.getDate1().get(GregorianCalendar.DATE) + " wasn't compared.</p>";
+        }
+        else if(CompareTest.compareDate(test.getDate1(), test.getDateComp()))
+        {
+            response += "<p> newDate is " + test.getDateComp().name() + "</p>";
+        }
+        else
+        {
+            response += "<p> newDate is not " + test.getDateComp().name() + "</p>";
+        }
+
+        return response;
+    }
+
 }

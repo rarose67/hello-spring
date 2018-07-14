@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head th:replace="fragments :: head"></head>
+<body>
+<!-- <nav th:replace="fragments :: navigation"></nav> -->
+
+    <h1 th:text="${title}"></h1>
+
+<!-- <p th:if="${error} and ${error.length()}" th:text="${error}"></p> -->
+
+    <form method="post" th:object="${compareTest}">
+        <div class="form-group">
+                <label th:for="num2">Integer:</label>
+                <input class="form-control" th:field="*{num2}" />
+                <select class="form-control" th:field="*{intComp}">
+                    <option th:replace="fragments :: compare"></option>
+                </select>
+        </div>
+        <div class="form-group">
+                <label th:for="dec">Decimal:</label>
+                <input class="form-control" th:field="*{dec}" />
+                <select class="form-control" th:field="*{floatComp}">
+                    <option th:replace="fragments :: compare"></option>
+                </select>
+        </div>
+        <div class="form-group">
+            <label th:for="date">Date:</label>
+                <input th:field="*{month}" /> /
+                <input th:field="*{day}" /> /
+                <input th:field="*{year}" />  |
+                <select th:field="*{dateComp}">
+                    <option th:replace="fragments :: compare"></option>
+                </select>
+            <div th:errors="*{month}"></div>
+        </div>
+        <input type="submit"/>
+    </form>
+</body>
+</html>
